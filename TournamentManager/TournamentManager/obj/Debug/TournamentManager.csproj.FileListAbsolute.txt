@@ -1,0 +1,7 @@
+C:\Users\Atgod\Desktop\C#\TournamentManager\TournamentManager\bin\Debug\TournamentManager.exe.config
+C:\Users\Atgod\Desktop\C#\TournamentManager\TournamentManager\bin\Debug\TournamentManager.exe
+C:\Users\Atgod\Desktop\C#\TournamentManager\TournamentManager\bin\Debug\TournamentManager.pdb
+C:\Users\Atgod\Desktop\C#\TournamentManager\TournamentManager\obj\Debug\TournamentManager.csprojAssemblyReference.cache
+C:\Users\Atgod\Desktop\C#\TournamentManager\TournamentManager\obj\Debug\TournamentManager.csproj.CoreCompileInputs.cache
+C:\Users\Atgod\Desktop\C#\TournamentManager\TournamentManager\obj\Debug\TournamentManager.exe
+C:\Users\Atgod\Desktop\C#\TournamentManager\TournamentManager\obj\Debug\TournamentManager.pdb
