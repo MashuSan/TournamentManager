@@ -55,13 +55,11 @@ namespace TournamentManager
                 {
                     await Task.Run(() =>
                     {
-                        Thread.Sleep(1000);
                         while (!reader.EndOfStream)
                         {
                             strings.Add(reader.ReadLine());
                         }
                         
-                        Task.Delay(100);
                         Console.WriteLine("Finished");
 
                     });

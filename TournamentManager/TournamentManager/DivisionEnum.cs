@@ -10,7 +10,7 @@ namespace TournamentManager
     {
         Unranked,
 
-        Bronze,
+        Newbie,
         Gold,
         Guardian,
         Supreme,
