@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace TournamentManager
 {
-    class TournamentCases
+    public enum TournamentCases
     {
+        One_group,
+        Two_groups,
+        Four_groups,
+        Eight_groups,
+        Sixteen_groups,
+
+        One_side,
+        Two_sides
     }
 }

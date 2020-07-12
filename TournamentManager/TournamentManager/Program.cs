@@ -9,23 +9,10 @@ namespace TournamentManager
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             var a = new StartSetup();
-            await a.loadTournaments();
-            //a.Begin();
-            var result = Task.Run(() =>
-            {
-                Task.Delay(10000).Wait();
-                return 5 * 10;
-            });
-            var taskDelay = Task.Delay(5000); // No blocking here, so
-            Console.WriteLine("One");
-            Console.WriteLine(result.Result);
-            var b = await result;
-            Console.WriteLine("two");
-            Console.WriteLine(b);
-
+            a.Begin();
             Console.ReadLine();
         }
     }
