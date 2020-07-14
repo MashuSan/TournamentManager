@@ -1,19 +1,24 @@
-
-Katowice 2015 LEC tournament
+Katowice 2015
 True
 True
 True
-16
-
-alala
-False
-False
-False
-0
-
-sadad
-False
+4
+Atgod;C0rtana;freestajlo;tiraksvk;
+Katowice 2016
+True
 True
 False
 0
-
+Atgod;C0rtana;freestajlo;tiraksvk;Saskinka;
+Katowice 2017
+True
+True
+False
+0
+Atgod;C0rtana;tiraksvk;freestajlo;Saskinka;
+Katowice 2018
+True
+True
+False
+0
+Atgod;C0rtana;

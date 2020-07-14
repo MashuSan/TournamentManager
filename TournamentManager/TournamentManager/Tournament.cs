@@ -38,7 +38,12 @@ namespace TournamentManager
             }
         }
 
-        private bool readBoolKey()
+        public void SetPlayers()
+        {
+
+        }
+
+        private bool ReadBoolKey()
         {
             bool boolResult;
             var isReadKey = bool.TryParse(Console.ReadLine(), out boolResult);
@@ -53,15 +58,15 @@ namespace TournamentManager
         {
             Console.WriteLine("Is this tournament competitive? false - NO; true - YES");
 
-            IsCompetitive = readBoolKey();
+            IsCompetitive = ReadBoolKey();
 
             Console.WriteLine("Does this tournament have prize money? false - NO; true - YES");
 
-            HasPrizeMoney = readBoolKey();
+            HasPrizeMoney = ReadBoolKey();
 
             Console.WriteLine("Does this tournament have player limit? false - NO; true - YES");
 
-            HasPlayerLimit = readBoolKey();
+            HasPlayerLimit = ReadBoolKey();
         }
 
         private void CheckPlayerLimit()
