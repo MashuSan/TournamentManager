@@ -10,11 +10,16 @@ namespace TournamentManager
     {
         public string Name { get; set; }
         public string Surname { get; set; }
-        public int Score { get; set; }
+        public string InGameName { get; set; }
+        public double KDA { get; set; }
         public int Rank { get; set; }
         public Divisions Division { get; set; }
         public string Team { get; set; }
 
+        public Player()
+        {
+            Division = Divisions.Unranked;
+        }
 
     }
 }
