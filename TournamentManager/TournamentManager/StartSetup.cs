@@ -23,7 +23,7 @@ namespace TournamentManager
             _players = new List<Player>();
         }
 
-        private void printCases()
+        private void printUserCases()
         {
             for (int i = 1; i < Enum.GetValues(typeof(UserCases)).Length; i++)
             {
@@ -61,7 +61,7 @@ namespace TournamentManager
                         ShowTournament();
                         break;
                 }
-                printCases();
+                printUserCases();
                 bool readKey = int.TryParse(Console.ReadLine(), out result);
             }
 
@@ -97,16 +97,22 @@ namespace TournamentManager
 
                             var playersLine = reader.ReadLine();
 
-                            foreach (var playerInGameName in playersLine.Split(';'))
+                            foreach (var player in playersLine.Split(';'))
                             {
-                                foreach(var player in _players)
-                                {
-                                    if (player.InGameName.Equals(playerInGameName))
-                                    {
-                                        existingTournament.Players.Add(player);
-                                        break;
-                                    }
-                                }
+                                var getPlayer = new Player();
+                                var playerInfo = player.Split('|');
+
+                                if (playerInfo.Length <= 1) 
+                                    continue;
+
+                                getPlayer.InGameName = playerInfo[0];
+                                getPlayer.Name = playerInfo[1];
+                                getPlayer.Surname = playerInfo[2];
+                                getPlayer.KDA = double.Parse(playerInfo[3]);
+                                getPlayer.Rank = int.Parse(playerInfo[4]);
+                                getPlayer.Division = (Divisions)Enum.Parse(typeof(Divisions), playerInfo[5]);
+                                getPlayer.Team = playerInfo[6];
+                                existingTournament.Players.Add(getPlayer);
                             }
                             
                             tournaments.Add(existingTournament);
@@ -237,7 +243,12 @@ namespace TournamentManager
                         writer.WriteLine(tournament.PlayerLimit);
                         foreach (var player in tournament.Players)
                         {
-                            writer.Write(player.InGameName + ";");
+                            writer.Write(player.InGameName + "|");
+                            writer.Write(player.Name + "|" + player.Surname + "|");
+                            writer.Write(player.KDA + "|");
+                            writer.Write(player.Rank + "|");
+                            writer.Write(player.Division + "|");
+                            writer.Write(player.Team + ";");
                         }
                         writer.WriteLine();
                     }
@@ -309,7 +320,7 @@ namespace TournamentManager
             newPlayer.InGameName = inGameName;
             newPlayer.Rank = lastRank;
             Console.WriteLine("Write down players team name or \"-\" for no team : ");
-            Console.ReadLine();
+            newPlayer.Team = Console.ReadLine();
 
             return newPlayer;
         }

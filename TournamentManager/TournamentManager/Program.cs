@@ -11,8 +11,8 @@ namespace TournamentManager
     {
         static void Main(string[] args)
         {
-            var a = new StartSetup();
-            a.Begin();
+            var tournamentManagerSetup = new StartSetup();
+            tournamentManagerSetup.Begin();
             Console.ReadLine();
         }
     }
