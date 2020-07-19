@@ -3,22 +3,40 @@ True
 True
 True
 4
-Atgod;C0rtana;freestajlo;tiraksvk;
+Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;Saskinka|Saskia|Hrnciarova|0|0|Unranked|-;
 Katowice 2016
 True
 True
-False
-0
-Atgod;C0rtana;freestajlo;tiraksvk;Saskinka;
+True
+4
+Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;Saskinka|Saskia|Hrnciarova|0|0|Unranked|-;
 Katowice 2017
 True
 True
-False
-0
-Atgod;C0rtana;tiraksvk;freestajlo;Saskinka;
-Katowice 2018
+True
+4
+Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;Saskinka|Saskia|Hrnciarova|0|0|Unranked|-;
+Katowice 2020
+True
+True
+True
+4
+Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;Saskinka|Saskia|Hrnciarova|0|0|Unranked|-;
+Katowice 2021
 True
 True
 False
 0
-Atgod;C0rtana;
+Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;Saskinka|Saskia|Hrnciarova|0|0|Unranked|-;freestajlo|Dominik|Kozubik|0|0|Unranked|-;
+Katovice 2015
+True
+True
+False
+0
+Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;Saskinka|Saskia|Hrnciarova|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;freestajlo|Dominik|Kozubik|0|0|Unranked|-;
+Katowice 2000
+True
+True
+False
+0
+Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;freestajlo|Dominik|Kozubik|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;Saskinka|Saskia|Hrnciarova|0|0|Unranked|-;

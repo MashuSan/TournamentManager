@@ -8,11 +8,12 @@ namespace TournamentManager
 {
     public enum TournamentCases
     {
+        Invalid_case,
+
         One_group,
         Two_groups,
         Four_groups,
         Eight_groups,
-        Sixteen_groups,
 
         One_side,
         Two_sides
