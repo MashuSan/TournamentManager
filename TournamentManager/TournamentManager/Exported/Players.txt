@@ -5,7 +5,6 @@ Atgod
 0
 Unranked
 -
-
 Andrej
 Fukas
 C0rtana
@@ -13,7 +12,6 @@ C0rtana
 0
 Unranked
 -
-
 Jozef
 Kovalak
 t1raksvk
@@ -21,10 +19,16 @@ t1raksvk
 0
 Unranked
 -
-
 Saskia
 Hrnciarova
-Saskia
+Saskinka
+0
+0
+Unranked
+-
+Dominik
+Kozubik
+freestajlo
 0
 0
 Unranked

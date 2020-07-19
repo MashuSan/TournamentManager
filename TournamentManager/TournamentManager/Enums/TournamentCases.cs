@@ -14,7 +14,6 @@ namespace TournamentManager
         Two_groups,
         Four_groups,
         Eight_groups,
-        Sixteen_groups,
 
         One_side,
         Two_sides

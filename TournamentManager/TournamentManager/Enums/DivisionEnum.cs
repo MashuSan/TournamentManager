@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace TournamentManager
 {
-    public class PlayerEditor
+    public enum Divisions
     {
+        Unranked,
+
+        Newbie,
+        Gold,
+        Guardian,
+        Supreme,
+        Diamond,
+        Master
     }
 }

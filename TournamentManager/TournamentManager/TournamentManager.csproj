@@ -45,16 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DivisionEnum.cs" />
-    <Compile Include="Player.cs" />
-    <Compile Include="PlayerEditor.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Enums\DivisionEnum.cs" />
+    <Compile Include="Logic\MatchInfo.cs" />
+    <Compile Include="Logic\Player.cs" />
+    <Compile Include="StartUp\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StartSetup.cs" />
-    <Compile Include="Tournament.cs" />
-    <Compile Include="TournamentCases.cs" />
-    <Compile Include="TournamentEditor.cs" />
-    <Compile Include="UserCases.cs" />
+    <Compile Include="StartUp\StartSetup.cs" />
+    <Compile Include="Logic\Tournament.cs" />
+    <Compile Include="Enums\TournamentCases.cs" />
+    <Compile Include="Enums\UserCases.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
