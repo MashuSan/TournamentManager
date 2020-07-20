@@ -13,12 +13,12 @@ namespace TournamentManager
 
         public Player Winner { get; set; }
 
-        public int RedKills  { get; private set; }
-        public int BlueKills { get; private set; }
+        public int RedKills  { get; set; }
+        public int BlueKills { get; set; }
 
-        public int RedDeaths { get; private set; }
-        public int BlueDeaths { get; private set; }
-        public bool Won { get; private set; } = false;
+        public int RedDeaths { get; set; }
+        public int BlueDeaths { get; set; }
+        public bool Won { get; set; } = false;
 
         public MatchInfo(Player redPlayer, Player bluePlayer)
         {
@@ -40,6 +40,11 @@ namespace TournamentManager
             RedPlayer = redPlayer;
             BluePlayer = new Player();
             BluePlayer.InGameName = "No player";
+
+            RedKills = 0;
+            RedDeaths = 0;
+            BlueKills = 0;
+            BlueDeaths = 0;
         }
 
         public override string ToString()

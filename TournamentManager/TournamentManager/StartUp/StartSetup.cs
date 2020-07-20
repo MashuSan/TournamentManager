@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TournamentManager
 {
@@ -23,7 +25,7 @@ namespace TournamentManager
             _players = new List<Player>();
         }
 
-        private void printUserCases()
+        private void PrintUserCases()
         {
             for (int i = 1; i < Enum.GetValues(typeof(UserCases)).Length; i++)
             {
@@ -34,11 +36,11 @@ namespace TournamentManager
 
         public void Begin()
         {
-            Console.WriteLine("Enter a number on your keyboard of the following : \n");
             LoadPlayers();
             LoadTournaments();
-            Main();
 
+            Console.WriteLine("Enter a number on your keyboard of the following : \n");
+            Main();
         }
 
         private void Main()
@@ -47,6 +49,7 @@ namespace TournamentManager
             {
                 Console.WriteLine("Waiting for data import completion..");
                 loadingTournaments.Wait();
+                Console.Clear();
             }
 
             while (result != (int)UserCases.Shut_down)
@@ -75,7 +78,7 @@ namespace TournamentManager
                     default:
                         break;
                 }
-                printUserCases();
+                PrintUserCases();
                 bool readKey = int.TryParse(Console.ReadLine(), out result);
             }
 
@@ -83,11 +86,11 @@ namespace TournamentManager
 
         private void LoadTournaments()
         {
-
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Exported", "Tournaments.txt");
             string line = null;
             if (!loadingPlayers.IsCompleted)
             {
+                Console.WriteLine("Waiting for player to import..");
                 loadingPlayers.Wait();
             }
 
@@ -106,14 +109,20 @@ namespace TournamentManager
                             var existingTournament = new Tournament(line);
                             existingTournament.IsCompetitive = bool.Parse(reader.ReadLine());
                             existingTournament.HasPrizeMoney = bool.Parse(reader.ReadLine());
+                            existingTournament.PrizeMoney = int.Parse(reader.ReadLine());
                             existingTournament.HasPlayerLimit = bool.Parse(reader.ReadLine());
                             existingTournament.PlayerLimit = int.Parse(reader.ReadLine());
+                            existingTournament.isFinished = bool.Parse(reader.ReadLine());
+                            existingTournament.IsGroupMatches = bool.Parse(reader.ReadLine());
+                            existingTournament.NumberOfSides = int.Parse(reader.ReadLine());
+                            var numberOfMatchesPlayed = int.Parse(reader.ReadLine());
+                            existingTournament.SetLastMatchAddedPos(int.Parse(reader.ReadLine()));
 
-                            var playersLine = reader.ReadLine();
+                            var getLine = reader.ReadLine();
 
-                            foreach (var player in playersLine.Split(';'))
+                            foreach (var player in getLine.Split(';'))
                             {
-                                var getPlayer = new Player();
+                                Player getPlayer = new Player();
                                 var playerInfo = player.Split('|');
 
                                 if (playerInfo.Length <= 1) 
@@ -128,7 +137,57 @@ namespace TournamentManager
                                 getPlayer.Team = playerInfo[6];
                                 existingTournament.Players.Add(getPlayer);
                             }
-                            
+
+                            getLine = reader.ReadLine();
+
+                            foreach (var match in getLine.Split(';'))
+                            {
+                                var matchInfo = match.Split('|');
+                                MatchInfo getMatch;
+
+                                if (matchInfo.Length <= 1)
+                                    continue;
+
+                                string redPlayer = matchInfo[0];
+                                string bluePlayer = matchInfo[1];
+
+                                if (bluePlayer == "No player")
+                                {
+                                    getMatch = new MatchInfo(existingTournament.FindPlayer(redPlayer));
+                                }
+                                else
+                                {
+                                    getMatch = new MatchInfo(existingTournament.FindPlayer(redPlayer), existingTournament.FindPlayer(bluePlayer));
+                                }
+
+                                getMatch.RedKills = int.Parse(matchInfo[2]);
+                                getMatch.RedDeaths = int.Parse(matchInfo[3]);
+                                getMatch.BlueKills = int.Parse(matchInfo[4]);
+                                getMatch.BlueDeaths = int.Parse(matchInfo[5]);
+                                getMatch.Won = bool.Parse(matchInfo[6]);
+                                if (getMatch.Won)
+                                    getMatch.Winner = existingTournament.FindPlayer(matchInfo[7]);
+
+                                existingTournament.Matches.Add(getMatch);
+                            }
+
+                            int groupPos = -1;
+                            while (!(getLine = reader.ReadLine()).Equals(";"))
+                            {
+                                groupPos++;
+                                existingTournament.ListsOfDividedPlayers.Add(new List<Player>());
+                                var playersInGroup = getLine.Split('|');
+                                foreach(var playerInGameName in playersInGroup)
+                                {
+                                    if (playerInGameName.Equals(""))
+                                        continue;
+
+                                    existingTournament.ListsOfDividedPlayers[groupPos].Add(existingTournament.FindPlayer(playerInGameName));
+                                }
+                            }
+
+                            existingTournament.SetNumberOfMatchesPlayed(numberOfMatchesPlayed);
+
                             tournaments.Add(existingTournament);
                         }
                     }
@@ -142,8 +201,8 @@ namespace TournamentManager
                     }
                     else
                     {
-                        Console.WriteLine("The import file doesn't exists or there is an error reading it, shutting down the program");
-                        result = (int)UserCases.Shut_down;
+                        Console.WriteLine("The import file doesn't exists or there is an error reading it," +
+                            " there won't be access to history of matches ");
                     }
                 }
                 _tournaments = tournaments;
@@ -194,10 +253,23 @@ namespace TournamentManager
                 }
                 else
                 {
-                    Console.WriteLine("The import file doesn't exist or there is an error reading it, shutting down the program");
-                    result = (int)UserCases.Shut_down;
+                    Console.WriteLine("The import file doesn't exists or there is an error reading it," +
+                            " there won't be access to history of players ");
                 }
             }
+        }
+
+        private Player FindPlayer(string inGameName)
+        {
+            foreach(var player in _players)
+            {
+                if (player.InGameName == inGameName)
+                {
+                    return player;
+                }
+            }
+            Console.WriteLine("No player with " + inGameName + " in database. Enter players info below : ");
+            return CreatePlayer(inGameName);
         }
 
         private void CreateNewTournament()
@@ -254,8 +326,14 @@ namespace TournamentManager
                         writer.WriteLine(tournament.Name);
                         writer.WriteLine(tournament.IsCompetitive);
                         writer.WriteLine(tournament.HasPrizeMoney);
+                        writer.WriteLine(tournament.PrizeMoney);
                         writer.WriteLine(tournament.HasPlayerLimit);
                         writer.WriteLine(tournament.PlayerLimit);
+                        writer.WriteLine(tournament.isFinished);
+                        writer.WriteLine(tournament.IsGroupMatches);
+                        writer.WriteLine(tournament.NumberOfSides);
+                        writer.WriteLine(tournament.GetNumberOfMatchesPlayed());
+                        writer.WriteLine(tournament.GetLastMatchAddedPos());
                         foreach (var player in tournament.Players)
                         {
                             writer.Write(player.InGameName + "|");
@@ -265,6 +343,28 @@ namespace TournamentManager
                             writer.Write(player.Division + "|");
                             writer.Write(player.Team + ";");
                         }
+                        writer.WriteLine();
+                        foreach (var match in tournament.Matches)
+                        {
+                            writer.Write(match.RedPlayer.InGameName + "|");
+                            writer.Write(match.BluePlayer.InGameName + "|");
+                            writer.Write(match.RedKills + "|");
+                            writer.Write(match.RedDeaths + "|");                           
+                            writer.Write(match.BlueKills + "|");
+                            writer.Write(match.BlueDeaths + "|");
+                            writer.Write(match.Won + "|");
+                            writer.Write(match.Winner + ";");
+                        }
+                        writer.WriteLine();
+                        foreach(var group in tournament.ListsOfDividedPlayers)
+                        {
+                            foreach(var player in group)
+                            {
+                                writer.Write(player.InGameName + "|");
+                            }
+                            writer.WriteLine();
+                        }
+                        writer.Write(";");
                         writer.WriteLine();
                     }
                 });
@@ -405,6 +505,12 @@ namespace TournamentManager
 
         private void SelectionOfTournament(string key)
         {
+            if (!loadingTournaments.IsCompleted)
+            {
+                Console.WriteLine("Waiting for importing all tournaments..");
+                loadingTournaments.Wait();
+            }
+
             Console.Clear();
             Console.WriteLine("Select your tournament: ");
             foreach (var tournament in _tournaments)
@@ -419,9 +525,14 @@ namespace TournamentManager
                 if (selection.Equals(tournament.Name))
                 {
                     if (key == "Show")
+                    {
                         ShowTournament(tournament);
+                    }
                     else if (key == "Edit")
+                    {
                         EditTournament(tournament);
+                        ExportTournament(tournament); //TODO : BIG - FIND AND REPLACE!! REDO REXPORT TO EDIT/ADD (rewrite, append)
+                    }
                     successfulySelected = true;
                 }
             }

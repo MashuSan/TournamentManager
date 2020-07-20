@@ -46,6 +46,16 @@ namespace TournamentManager
             return _numberOfMatchesPlayed;
         }
 
+        public int GetLastMatchAddedPos()
+        {
+            return lastMatchAddedPos;
+        }
+
+        public void SetLastMatchAddedPos(int pos)
+        {
+            lastMatchAddedPos = pos;
+        }
+
         public void SetNumberOfMatchesPlayed(int number)
         {
             if (number == Matches.Count)
@@ -62,6 +72,19 @@ namespace TournamentManager
             {
                 _numberOfMatchesPlayed = number;
             }
+        }
+        public Player FindPlayer(string inGameName)
+        {
+            Player foundPlayer = new Player();
+            foreach (var player in Players)
+            {
+                if (player.InGameName == inGameName)
+                {
+                    foundPlayer = player;
+                    break;
+                }
+            }
+            return foundPlayer;
         }
 
         public void SetSettings()
@@ -86,7 +109,7 @@ namespace TournamentManager
 
             for (int i = 0; i < NumberOfSides; i++)
             {
-                ListsOfDividedPlayers[i] = new List<Player>();
+                ListsOfDividedPlayers.Add(new List<Player>());
                 for (int j = actualPositionOnPlayer; j < (actualNumberOfPlayers / NumberOfSides) + actualPositionOnPlayer; j++)
                 {
                     ListsOfDividedPlayers[i].Add(randomList[j]);
@@ -135,29 +158,39 @@ namespace TournamentManager
             }
         }
 
-        private void CreateContinualMatches() //GET WINNER AND SHUFFLE THEM, add tournament of 5, One side, bug!
+        private void CreateContinualMatches()
         {
             if (isFinished)
                 return;
 
             var newMatches = new List<MatchInfo>();
 
-            for (int i = lastMatchAddedPos; i < Matches.Count; i += 2)
+            List<Player> winners = new List<Player>();
+
+            for (int i = lastMatchAddedPos; i < Matches.Count; i++)
+            {
+                winners.Add(Matches[i].Winner);
+            }
+
+            var rand = new Random();
+            winners = winners.OrderBy(x => rand.Next()).ToList();
+
+            for (int i = 0; i < winners.Count; i += 2)
             {
                 MatchInfo newMatch;
-                if (i + 1 >= Matches.Count)
+                if (i + 1 >= winners.Count)
                 {
-                    newMatch = new MatchInfo(Matches[i].Winner);
+                    newMatch = new MatchInfo(winners[i]);
                     newMatches.Add(newMatch);
                     SetNumberOfMatchesPlayed(_numberOfMatchesPlayed + 1);
                     break;
                 }
-                newMatch = new MatchInfo(Matches[i].Winner, Matches[i + 1].Winner);
+                newMatch = new MatchInfo(winners[i], winners[i + 1]);
                 newMatches.Add(newMatch);
             }
-
+            lastMatchAddedPos = Matches.Count;
             Matches.AddRange(newMatches);
-            lastMatchAddedPos = Matches.Count - 1;
+            
         }
         
         public void PrintMatches()
@@ -291,8 +324,8 @@ namespace TournamentManager
 
             Console.WriteLine("Set the prize money : ");
 
-            int result;
-            while(!int.TryParse(Console.ReadLine(), out result))
+            int result = 0;
+            while (!int.TryParse(Console.ReadLine(), out result)) ;
             PrizeMoney = result;
 
             Console.WriteLine("Does this tournament have player limit? false - NO; true - YES");
@@ -315,6 +348,5 @@ namespace TournamentManager
                 PlayerLimit = intResult;
             }
         }
-
     }
 }
