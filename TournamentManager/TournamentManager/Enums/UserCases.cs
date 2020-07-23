@@ -15,7 +15,8 @@ namespace TournamentManager
         Show_tournament,
         Show_actual_ranks,
         Add_player,
+        Show_player_info,
 
-        Shut_down
+        Save_and_shut_down
     }
 }

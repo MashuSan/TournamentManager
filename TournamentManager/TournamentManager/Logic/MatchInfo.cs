@@ -64,32 +64,46 @@ namespace TournamentManager
 
         private void EnterKillsAndDeaths(string playerSide)
         {
-            Console.WriteLine("Enter kills and Deaths for " + playerSide + "Player : ");
+            Console.WriteLine("Enter kills and Deaths for " + playerSide + " Player : ");
 
             Console.WriteLine("Kills : ");
             int resultKills = 0;
-            while (!int.TryParse(Console.ReadLine(), out resultKills)) { }
+            while (!int.TryParse(Console.ReadLine(), out resultKills)) ;
 
             Console.WriteLine("Deaths : ");
             int resultDeaths = 0;
-            while (!int.TryParse(Console.ReadLine(), out resultDeaths)) { }
+            while (!int.TryParse(Console.ReadLine(), out resultDeaths)) ;
 
             if (playerSide == "Red")
             {
                 RedKills = resultKills;
                 RedDeaths = resultDeaths;
+                RedPlayer.Kills = resultKills;
+                RedPlayer.Deaths = resultDeaths;
+
+                BlueKills = RedDeaths;
+                BlueDeaths = RedKills;
+                BluePlayer.Kills = RedDeaths;
+                BluePlayer.Deaths = RedKills;
             }
             else if (playerSide == "Blue")
             {
                 BlueKills = resultKills;
                 BlueDeaths = resultDeaths;
+                BluePlayer.Kills = resultKills;
+                BluePlayer.Deaths = resultDeaths;
+
+                RedKills = BlueDeaths;
+                RedDeaths = BlueKills;
+                RedPlayer.Kills = BlueDeaths;
+                RedPlayer.Deaths = BlueKills;
             }
 
         }
 
         public void WhoWon()
         {
-            Console.WriteLine("Who won? Red/Blue");
+            Console.WriteLine("Who won? " + "Red = " +RedPlayer + "/ Blue = " + BluePlayer);
 
             string input = "";
             while (input != "Red" && input != "Blue")
@@ -100,16 +114,15 @@ namespace TournamentManager
             if (input == "Red")
             {
                 Winner = RedPlayer;
+                EnterKillsAndDeaths("Red");
             }
             else
             {
                 Winner = BluePlayer;
+                EnterKillsAndDeaths("Blue");
             }
 
             Won = true;
-
-            EnterKillsAndDeaths("Red");
-            EnterKillsAndDeaths("Blue");
         }
     }
 }

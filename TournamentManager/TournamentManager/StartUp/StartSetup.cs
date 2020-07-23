@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,10 +17,12 @@ namespace TournamentManager
         private List<Player> _players;
         private Task loadingTournaments;
         private Task loadingPlayers;
-        private Task export;
+        private Task exportTournaments;
+        private Task exportPlayers;
         private int result;
         private int errorMax = 0;
         private int lastRank;
+
         public StartSetup()
         {
             _tournaments = new List<Tournament>();
@@ -45,14 +49,15 @@ namespace TournamentManager
 
         private void Main()
         {
-            if (!loadingTournaments.IsCompleted)
+            if (loadingTournaments.Status == TaskStatus.Running)
             {
                 Console.WriteLine("Waiting for data import completion..");
                 loadingTournaments.Wait();
-                Console.Clear();
             }
 
-            while (result != (int)UserCases.Shut_down)
+            Console.Clear();
+
+            while (result != (int)UserCases.Save_and_shut_down)
             {
                 switch ((UserCases)result)
                 {
@@ -65,6 +70,7 @@ namespace TournamentManager
                         break;
 
                     case UserCases.Show_actual_ranks:
+                        ShowActualRanks();
                         break;
 
                     case UserCases.Edit_existing_tournament:
@@ -75,6 +81,10 @@ namespace TournamentManager
                         AddPlayer();
                         break;
 
+                    case UserCases.Show_player_info:
+                        ShowPlayerInfo();
+                        break;
+
                     default:
                         break;
                 }
@@ -82,15 +92,16 @@ namespace TournamentManager
                 bool readKey = int.TryParse(Console.ReadLine(), out result);
             }
 
+            SaveAndShutDown();
         }
 
         private void LoadTournaments()
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Exported", "Tournaments.txt");
             string line = null;
-            if (!loadingPlayers.IsCompleted)
+            if (loadingPlayers.Status != TaskStatus.RanToCompletion)
             {
-                Console.WriteLine("Waiting for player to import..");
+                Console.WriteLine("Waiting for players to import..");
                 loadingPlayers.Wait();
             }
 
@@ -174,6 +185,9 @@ namespace TournamentManager
                             int groupPos = -1;
                             while (!(getLine = reader.ReadLine()).Equals(";"))
                             {
+                                if (getLine.Equals(""))
+                                    continue;
+
                                 groupPos++;
                                 existingTournament.ListsOfDividedPlayers.Add(new List<Player>());
                                 var playersInGroup = getLine.Split('|');
@@ -231,7 +245,10 @@ namespace TournamentManager
                             existingPlayer.Surname = reader.ReadLine();
                             existingPlayer.InGameName = reader.ReadLine();
                             existingPlayer.KDA = double.Parse(reader.ReadLine());
+                            existingPlayer.Kills = int.Parse(reader.ReadLine());
+                            existingPlayer.Deaths = int.Parse(reader.ReadLine());
                             existingPlayer.Rank = int.Parse(reader.ReadLine());
+                            existingPlayer.WonTournaments = int.Parse(reader.ReadLine());
                             existingPlayer.Division = (Divisions)Enum.Parse(typeof(Divisions), reader.ReadLine());
                             existingPlayer.Team = reader.ReadLine();
 
@@ -259,19 +276,6 @@ namespace TournamentManager
             }
         }
 
-        private Player FindPlayer(string inGameName)
-        {
-            foreach(var player in _players)
-            {
-                if (player.InGameName == inGameName)
-                {
-                    return player;
-                }
-            }
-            Console.WriteLine("No player with " + inGameName + " in database. Enter players info below : ");
-            return CreatePlayer(inGameName);
-        }
-
         private void CreateNewTournament()
         {
             Tournament newTournament = new Tournament(SetTournamentName());
@@ -279,6 +283,7 @@ namespace TournamentManager
             AddPlayersToTournament(newTournament);
             newTournament.InitializeMatchesOfTournament();
             AddTournamentToCollection(newTournament);
+            Console.Clear();
         }
 
         private string SetTournamentName()
@@ -313,13 +318,20 @@ namespace TournamentManager
             _tournaments.Add(tournament);
             ExportTournament(tournament);
         }
-        //TODO : WAIT FOR EXPORTS TO MAKE GOOD LOGIC
+
         private void ExportTournament(Tournament tournament)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Exported", "Tournaments.txt");
+            
+            if (exportTournaments != null && exportTournaments.Status != TaskStatus.RanToCompletion)
+            {
+                Console.WriteLine("Waiting for previous exporting to be completed..");
+                exportTournaments.Wait();
+            }
+
             try
             {
-                export = Task.Run(() =>
+                exportTournaments = Task.Run(() =>
                 {
                     using (StreamWriter writer = File.AppendText(path))
                     {
@@ -382,9 +394,8 @@ namespace TournamentManager
             Task findTask = null;
             while(true)
             {
-                if (findTask != null && !findTask.IsCompleted)
+                if (findTask != null && findTask.Status != TaskStatus.RanToCompletion)
                 {
-                    Console.WriteLine("Waiting for validation..");
                     findTask.Wait();
                 }
 
@@ -398,7 +409,24 @@ namespace TournamentManager
 
                 if (input == "")
                 {
-                    break;
+                    if (tournament.IsGroupMatches && ((tournament.Players.Count % 2 != 0) || tournament.NumberOfSides * 2 > tournament.Players.Count))
+                    {
+                        Console.WriteLine("Cant proceed with these settings and this number of players.");
+                        Console.WriteLine("If you want group matches, the number of players needs to be divisible by 2.");
+                        Console.WriteLine("Do you want to change the settings? true/false");
+                        bool boolResult;
+                        while (!bool.TryParse(Console.ReadLine(), out boolResult)) ;
+
+                        if (boolResult)
+                        {
+                            tournament.SetGroupStyle();
+                        }
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
 
                 findTask = Task.Run(() =>
@@ -408,6 +436,23 @@ namespace TournamentManager
                     {
                         if (player.InGameName.Equals(input))
                         {
+                            bool inTournament = false;
+                            foreach (var playerInTournament in tournament.Players)
+                            {
+                                if (playerInTournament == player)
+                                {
+                                    Console.WriteLine("Player already in tournament!");
+                                    inTournament = true;
+                                    break;
+                                }
+                            }
+
+                            if (inTournament)
+                            {
+                                found = true;
+                                break;
+                            }
+                            
                             tournament.Players.Add(player);
                             found = true;
                             break;
@@ -417,7 +462,7 @@ namespace TournamentManager
                     {
                         var newPlayer = CreatePlayer(input);
                         tournament.Players.Add(newPlayer);
-                        ExportPlayer(newPlayer);
+                        _players.Add(newPlayer);
                     }
                 });
 
@@ -474,9 +519,15 @@ namespace TournamentManager
         private void ExportPlayer(Player player)
         {
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Exported", "Players.txt");
+            if (exportPlayers != null && exportPlayers.Status != TaskStatus.RanToCompletion)
+            {
+                Console.WriteLine("Waiting for previous exporting to be completed..");
+                exportPlayers.Wait();
+            }
+
             try
             {
-                export = Task.Run(() =>
+                exportPlayers = Task.Run(() =>
                 {
                     using (StreamWriter writer = File.AppendText(path))
                     {
@@ -484,7 +535,10 @@ namespace TournamentManager
                         writer.WriteLine(player.Surname);
                         writer.WriteLine(player.InGameName);
                         writer.WriteLine(player.KDA);
+                        writer.WriteLine(player.Kills);
+                        writer.WriteLine(player.Deaths);
                         writer.WriteLine(player.Rank);
+                        writer.WriteLine(player.WonTournaments);
                         writer.WriteLine(player.Division);
                         writer.WriteLine(player.Team);
                     }
@@ -526,12 +580,11 @@ namespace TournamentManager
                 {
                     if (key == "Show")
                     {
-                        ShowTournament(tournament);
+                        tournament.ShowTournament();
                     }
                     else if (key == "Edit")
                     {
                         EditTournament(tournament);
-                        ExportTournament(tournament); //TODO : BIG - FIND AND REPLACE!! REDO REXPORT TO EDIT/ADD (rewrite, append)
                     }
                     successfulySelected = true;
                 }
@@ -543,26 +596,79 @@ namespace TournamentManager
             Console.WriteLine();
         }
 
-        private void ShowTournament(Tournament tournament)
+        private void SaveAndShutDown()
         {
-            Console.Clear();
-            Console.WriteLine("Tournament name : " + tournament.Name);
-            Console.WriteLine("IsCompetitive : " + tournament.IsCompetitive);
-            Console.WriteLine("Has prize money : " + tournament.HasPrizeMoney);
-            Console.WriteLine("Has player limit : " + tournament.HasPlayerLimit);
-            Console.WriteLine("Player limit : " + tournament.PlayerLimit);
-            Console.WriteLine("Player names : ");
-            foreach(var player in tournament.Players)//TODO: WRITE THE LOGIC IN TOURNAMENT CLASS
+            if (loadingPlayers.Status != TaskStatus.RanToCompletion || loadingTournaments.Status != TaskStatus.RanToCompletion)
             {
-                Console.WriteLine(player.InGameName);
-            }
-            Console.WriteLine("Matches : ");
-            tournament.PrintMatches();
-            if (tournament.isFinished)
-            {
-                Console.WriteLine("Tournament won by " + tournament.TournamentWinner);
+                Console.WriteLine("Waiting for all imports to be complete to be able to export all info..");
+                loadingPlayers.Wait();
+                loadingTournaments.Wait();
             }
 
+            Task.Run(() =>
+            {
+                File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Exported", "Tournaments.txt"), String.Empty);
+                File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "Exported", "Players.txt"), String.Empty);
+            }).Wait();
+            
+
+            Console.WriteLine("Please wait for the export to be done. Thanks!");
+
+            foreach (var tournament in _tournaments)
+            {
+                ExportTournament(tournament);
+            }
+
+            exportTournaments.Wait();
+
+            foreach (var player in _players)
+            {
+                ExportPlayer(player);
+            }
+
+            Console.Clear();
+            Console.WriteLine("Shutting down the program. Click Enter!");
+            Console.ReadLine();
+        }
+
+        private void ShowPlayerInfo()
+        {
+            Console.Clear();
+            Console.WriteLine("Select your player : ");
+            int iterator = 0;
+            foreach(var player in _players)
+            {
+                Console.WriteLine((iterator++) + " = " + player);
+            }
+
+            int choice = 0;
+            while(!int.TryParse(Console.ReadLine(), out choice));
+
+            if (choice < 0 || choice > _players.Count - 1)
+                return;
+
+            for (int i = 0; i < _players.Count; i++)
+            {
+                if (choice == i)
+                {
+                    _players[i].ShowInfo();
+                    return;
+                }
+            }
+        }
+
+        private void ShowActualRanks()
+        {
+            Console.Clear();
+            var ranks = _players.OrderByDescending(x => x.WonTournaments).ThenBy(x => x.Name);
+            int iterator = 1;
+            foreach(var player in ranks)
+            {
+                Console.WriteLine("Player : " + player + " rank " + iterator++);
+                Console.Write(" with " + player.WonTournaments + " tournaments");
+                Console.WriteLine();
+            }
+            Console.WriteLine();
         }
     }
 }

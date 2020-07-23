@@ -58,14 +58,15 @@ namespace TournamentManager
 
         public void SetNumberOfMatchesPlayed(int number)
         {
-            if (number == Matches.Count)
+            if (number == Matches.Count && Matches.Count != 0)
             {
                 _numberOfMatchesPlayed = number;
                 CreateContinualMatches();
                 if (_numberOfMatchesPlayed == Matches.Count)
                 {
                     isFinished = true;
-                    TournamentWinner = Matches.Last().Winner;
+                    TournamentWinner = Matches?.Last().Winner;
+                    TournamentWinner.WonTournaments += 1;
                 }
             }
             else
@@ -167,9 +168,33 @@ namespace TournamentManager
 
             List<Player> winners = new List<Player>();
 
-            for (int i = lastMatchAddedPos; i < Matches.Count; i++)
+            if (!IsGroupMatches)
             {
-                winners.Add(Matches[i].Winner);
+                for (int i = lastMatchAddedPos; i < Matches.Count; i++)
+                {
+                    winners.Add(Matches[i].Winner);
+                }
+            }
+            else
+            {
+                var groupWinners = new Dictionary<Player, int>();
+
+                foreach(var player in Players)
+                {
+                    groupWinners.Add(player, 0);
+                }
+
+                for(int i = lastMatchAddedPos; i < Matches.Count; i++)
+                {
+                    groupWinners[Matches[i].Winner] += 1;
+                }
+
+                groupWinners = groupWinners.OrderByDescending(x => x.Value).Where(x => x.Value > 0).ToDictionary(x => x.Key, y => y.Value);
+
+                for (int i = 0; i < groupWinners.Count; i++)
+                {
+                    winners.Add(groupWinners.Keys.ElementAt(i));
+                }
             }
 
             var rand = new Random();
@@ -249,7 +274,7 @@ namespace TournamentManager
             }
         }
 
-        private void SetGroupStyle()
+        public void SetGroupStyle()
         {
             Console.WriteLine("Choose your prefered tournament style :");
             PrintTournamentCases();
@@ -273,22 +298,28 @@ namespace TournamentManager
                         numberOfSides = 4;
                         IsGroupMatches = true;
                         break;
-                    case TournamentCases.Eight_groups:
-                        numberOfSides = 8;
-                        IsGroupMatches = true;
-                        break;
                     case TournamentCases.One_side:
                         numberOfSides = 1;
+                        IsGroupMatches = false;
                         break;
                     case TournamentCases.Two_sides:
                         numberOfSides = 2;
+                        IsGroupMatches = false;
                         break;
 
                     default:
                         continue;
                 }
             }
-            SetNumbersOfSides(numberOfSides);
+            if (PlayerLimit < numberOfSides * 2)
+            {
+                Console.WriteLine("The player limit is not enough for chosen tournament setting. Please, choose again..");
+                SetGroupStyle();
+            }
+            else
+            {
+                SetNumbersOfSides(numberOfSides);
+            }
         }
 
         private void SetNumbersOfSides(int number)
@@ -314,21 +345,23 @@ namespace TournamentManager
 
         private void SetBoolean()
         {
-            Console.WriteLine("Is this tournament competitive? false - NO; true - YES");
+            Console.WriteLine("Is this tournament competitive? False/True");
 
             IsCompetitive = ReadBoolKey();
 
-            Console.WriteLine("Does this tournament have prize money? false - NO; true - YES");
+            Console.WriteLine("Does this tournament have prize money? False/True");
 
             HasPrizeMoney = ReadBoolKey();
 
-            Console.WriteLine("Set the prize money : ");
+            if (HasPrizeMoney)
+            {
+                Console.WriteLine("Set the prize money : ");
 
-            int result = 0;
-            while (!int.TryParse(Console.ReadLine(), out result)) ;
-            PrizeMoney = result;
-
-            Console.WriteLine("Does this tournament have player limit? false - NO; true - YES");
+                int result = 0;
+                while (!int.TryParse(Console.ReadLine(), out result)) ;
+                PrizeMoney = result;
+            }
+            Console.WriteLine("Does this tournament have player limit? False/True");
 
             HasPlayerLimit = ReadBoolKey();
         }
@@ -346,6 +379,32 @@ namespace TournamentManager
                 }
 
                 PlayerLimit = intResult;
+            }
+        }
+
+        public void PrintPlayersInGameNames()
+        {
+            foreach (var player in Players)
+            {
+                Console.WriteLine(player.InGameName);
+            }
+        }
+
+        public void ShowTournament()
+        {
+            Console.Clear();
+            Console.WriteLine("Tournament name : " + Name);
+            Console.WriteLine("IsCompetitive : " + IsCompetitive);
+            Console.WriteLine("Has prize money : " + HasPrizeMoney);
+            Console.WriteLine("Has player limit : " + HasPlayerLimit);
+            Console.WriteLine("Player limit : " + PlayerLimit);
+            Console.WriteLine("Player names : ");
+            PrintPlayersInGameNames();
+            Console.WriteLine("Matches : ");
+            PrintMatches();
+            if (isFinished)
+            {
+                Console.WriteLine("Tournament won by " + TournamentWinner);
             }
         }
     }

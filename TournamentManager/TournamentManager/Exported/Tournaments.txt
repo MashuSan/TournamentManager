@@ -1,31 +1,97 @@
 Katowice 2015
 True
 True
-20000
+300000
 True
-4
-False
+6
+True
 True
 2
-0
-0
-Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;freestajlo|Dominik|Kozubik|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;
-t1raksvk|Atgod|0|0|0|0|False|;C0rtana|freestajlo|0|0|0|0|False|;
-t1raksvk|Atgod|
-C0rtana|freestajlo|
+4
+3
+Atgod|Matus|Valko|2,33|0|Unranked|-;freestajlo|Dominik|Kozubik|0,67|0|Unranked|-;t1raksvk|Jozef|Kovalak|1|0|Unranked|-;C0rtana|Andrej|Fukas|0,4|0|Unranked|-;
+Atgod|C0rtana|5|2|2|5|True|Atgod;freestajlo|t1raksvk|2|3|3|2|True|t1raksvk;t1raksvk|Atgod|1|2|2|1|True|Atgod;Atgod|No player|0|0|0|0|True|Atgod;
+Atgod|C0rtana|
+freestajlo|t1raksvk|
 ;
 Katowice 2016
 True
 True
-200000
+32313
+True
+4
 False
-0
-False
-False
+True
 1
-1
-0
-Atgod|Matus|Valko|0|0|Unranked|-;C0rtana|Andrej|Fukas|0|0|Unranked|-;t1raksvk|Jozef|Kovalak|0|0|Unranked|-;
-Atgod|t1raksvk|0|0|0|0|False|;C0rtana|No player|0|0|0|0|True|C0rtana;
-Atgod|t1raksvk|C0rtana|
+7
+6
+Atgod|Matus|Valko|1,82|0|Unranked|-;C0rtana|Andrej|Fukas|1,08|0|Unranked|-;t1raksvk|Jozef|Kovalak|0,71|0|Unranked|-;freestajlo|Dominik|Kozubik|0,69|0|Unranked|-;
+t1raksvk|freestajlo|2|5|5|2|True|freestajlo;t1raksvk|C0rtana|2|3|3|2|True|C0rtana;t1raksvk|Atgod|4|5|5|4|True|Atgod;freestajlo|C0rtana|2|1|1|2|True|freestajlo;freestajlo|Atgod|1|6|6|1|True|Atgod;C0rtana|Atgod|3|2|2|3|True|C0rtana;C0rtana|freestajlo|4|1|1|4|True|C0rtana;freestajlo|Atgod|0|0|0|0|False|;Atgod|C0rtana|0|0|0|0|False|;
+t1raksvk|freestajlo|C0rtana|Atgod|
+;
+Katowice 2017
+True
+True
+32131312
+True
+6
+True
+True
+2
+11
+10
+Atgod|Matus|Valko|1,5|0|Unranked|-;C0rtana|Andrej|Fukas|0,88|0|Unranked|-;t1raksvk|Jozef|Kovalak|1,14|0|Unranked|-;freestajlo|Dominik|Kozubik|0,67|0|Unranked|-;Saskinka|Saskia|Hrnciarova|1|0|Unranked|-;Sofia|Bahutova|Bahutova|0,67|0|Unranked|-;
+C0rtana|Sofia|3|2|2|3|True|C0rtana;C0rtana|Atgod|2|3|3|2|True|Atgod;Sofia|Atgod|2|3|3|2|True|Atgod;Saskinka|t1raksvk|2|3|3|2|True|t1raksvk;Saskinka|freestajlo|3|2|2|3|True|Saskinka;t1raksvk|freestajlo|3|2|2|3|True|t1raksvk;t1raksvk|Atgod|2|3|3|2|True|Atgod;C0rtana|No player|0|0|0|0|True|C0rtana;C0rtana|Atgod|2|3|3|2|True|Atgod;Atgod|No player|0|0|0|0|True|Atgod;Atgod|No player|0|0|0|0|True|Atgod;
+C0rtana|Sofia|Atgod|
+Saskinka|t1raksvk|freestajlo|
+;
+Katowice 2020
+True
+True
+3232
+True
+4
+True
+True
+2
+4
+3
+Atgod|Matus|Valko|1,73|0|Unranked|-;freestajlo|Dominik|Kozubik|0,76|0|Unranked|-;C0rtana|Andrej|Fukas|1|0|Unranked|-;t1raksvk|Jozef|Kovalak|0,7|0|Unranked|-;
+t1raksvk|Atgod|2|3|3|2|True|Atgod;freestajlo|C0rtana|3|2|2|3|True|freestajlo;freestajlo|Atgod|2|3|3|2|True|Atgod;Atgod|No player|0|0|0|0|True|Atgod;
+t1raksvk|Atgod|
+freestajlo|C0rtana|
+;
+Katowice 2021
+True
+True
+3213
+True
+8
+True
+True
+2
+10
+9
+Atgod|Matus|Valko|1,54|0|Unranked|-;C0rtana|Andrej|Fukas|0,96|0|Unranked|-;t1raksvk|Jozef|Kovalak|0,75|0|Unranked|-;Sofia|Sofia|Babula|0,67|0|Unranked|-;Saskinka|Saskia|Hrnciarova|0,67|0|Unranked|-;freestajlo|Dominik|Kozubik|0,97|0|Unranked|-;
+freestajlo|C0rtana|3|2|2|3|True|freestajlo;freestajlo|Sofia|3|2|2|3|True|freestajlo;C0rtana|Sofia|3|2|2|3|True|C0rtana;Atgod|t1raksvk|3|2|2|3|True|Atgod;Atgod|Saskinka|3|2|2|3|True|Atgod;t1raksvk|Saskinka|3|2|2|3|True|t1raksvk;Atgod|C0rtana|3|2|2|3|True|Atgod;freestajlo|t1raksvk|3|2|2|3|True|freestajlo;Atgod|freestajlo|2|3|3|2|True|freestajlo;freestajlo|No player|0|0|0|0|True|freestajlo;
+freestajlo|C0rtana|Sofia|
+Atgod|t1raksvk|Saskinka|
+;
+Katowice 2022
+True
+True
+323232
+True
+4
+True
+False
+2
+4
+3
+Atgod|Matus|Valko|1,54|0|Unranked|-;C0rtana|Andrej|Fukas|0,92|0|Unranked|-;t1raksvk|Jozef|Kovalak|0,79|0|Unranked|-;freestajlo|Dominik|Kozubik|0,94|0|Unranked|-;
+C0rtana|Atgod|2|3|3|2|True|Atgod;freestajlo|t1raksvk|2|3|3|2|True|t1raksvk;Atgod|t1raksvk|3|2|2|3|True|Atgod;Atgod|No player|0|0|0|0|True|Atgod;
+C0rtana|Atgod|
+freestajlo|t1raksvk|
+
+
 ;
